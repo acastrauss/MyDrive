@@ -1,42 +1,25 @@
 const exppress = require('express');
-const {MongoClient} = require('mongodb');
-
+const sha256 = require('js-sha256');
+const DBUsers = require('./DB/DBCRUDUsers');
 
 
 const PORT = process.env.PORT || 3001;
 
-const MongoPass = `hwb9IWqRMg2Lwyqh`;
-const DBName = `MyDriveProject`;
-
 const app = exppress();
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
     console.log(`Server listening on ${PORT}`);
+
+    // let user = {
+    //     Username: 'asd',
+    //     PasswordHash: sha256.sha256('asd'),
+    //     Email: 'asd@asd.com'
+    // };
+
+    // let newUser = await DBUsers.UpdateUser('616d25c6644b8bad5466182a', user);
+    // console.log(newUser);
+
+    // DBUsers.CreateUser(user);
+    // DBUsers.DeleteUser('616d35a2260eea425aa4fa1f');
+    // DBUsers.CheckIfUserExists('123', sha256.sha256('123'));
 });
-
-async function main(){
-    const uri = `mongodb+srv://DriveProjectDev:${MongoPass}@mydriveproject.qibd5.mongodb.net/${DBName}?retryWrites=true&w=majority`;
-
-    const client = new MongoClient(uri);
-
-    try{
-        
-        await client.connect();
-        await listDatabases(client);
-    }
-    catch(e){
-        console.error(e);
-    }
-    finally{
-        await client.close();
-    }
-}
-
-async function listDatabases(client){
-    databasesList = await client.db().admin().listDatabases();
- 
-    console.log("Databases:");
-    databasesList.databases.forEach(db => console.log(` - ${db.name}`));
-};
-
-main().catch(console.error);
