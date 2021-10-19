@@ -44,3 +44,8 @@ app.post('/RegisterUser', async (req, res) => {
         res.json(newUser);    
     }
 });
+
+app.post('/LoginUser', async (req, res) => {
+    let current = await DBUsers.CheckIfUserExists(req.body.Username, req.body.PasswordHash);
+    res.json(current);
+});

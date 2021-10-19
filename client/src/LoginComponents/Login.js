@@ -14,7 +14,35 @@ export class Login extends React.Component{
         let formData = new FormData(this.formRef);
         formData.set('PasswordHash', sha256(formData.get('PasswordHash')));
         
-        
+        let user = {};
+
+        for (let key of formData) {
+            user[key[0]] = key[1];
+        }
+
+        let reqH = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(user)
+        };
+
+        fetch('LoginUser', reqH)
+        .then(res => res.json())
+        .then(data => {
+            if(data){
+                data.type = UserStore.LOGIN_USER;
+                UserStore.userStore.dispatch(data);
+                sessionStorage.setItem('user', JSON.stringify(data));
+            }
+            else {
+                alert('Wrong credentials.');
+            }
+            
+            this.formRef.reset();
+            this.forceUpdate();
+        });
     }
 
     preventRefresh(e){
@@ -48,8 +76,7 @@ export class Login extends React.Component{
                 type='submit'
                 onClick={this.onFormClick}
                 value='Login'
-            />
-            
+            />           
         </form>
     }
 }
