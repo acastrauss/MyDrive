@@ -2,6 +2,7 @@ import React from 'react';
 import { Login } from './Login';
 import { Register } from './Register';
 import './Form.css'
+import * as UserStore from './../Stores/UserStore';
 
 export class LoginRegisterContainer extends React.Component{
     constructor(props){
@@ -11,6 +12,20 @@ export class LoginRegisterContainer extends React.Component{
             active: [false, false]
         };
         this.onBtnClick = this.onBtnClick.bind(this);
+        this.componentDidMount = this.componentDidMount.bind(this);
+        this.componentWillUnmount = this.componentWillUnmount.bind(this);
+    }
+
+    componentDidMount(){
+        this.unsub = UserStore.userStore.subscribe(() => {
+            this.setState({
+                active: [false, false]
+            });
+        })
+    }
+
+    componentWillUnmount(){
+        this.unsub();
     }
 
     onBtnClick(e){

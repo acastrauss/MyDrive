@@ -1,6 +1,6 @@
 import './App.css';
 import './Grid.css';
-import { LoginRegisterContainer } from './LoginComponents/LoginRegisterContainer';
+import { User } from './LoginComponents/User';
 
 function App() {
   return (
@@ -8,7 +8,7 @@ function App() {
       <header className="App-header">
         <div className='grid-container'>
           <div className='grid-loginRegister'>
-            <LoginRegisterContainer/>
+            <User/>
           </div>
         </div>
       </header>

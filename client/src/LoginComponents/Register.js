@@ -3,21 +3,72 @@ import React from 'react';
 import * as UserStore from './../Stores/UserStore';
 import './Form.css';
 
+let btnOpac = 0.5;
 
 export class Register extends React.Component{
 
     constructor(props){
         super(props);
-        this.onFormClick = this.onFormClick.bind(this);        
+        this.state = {
+            formValid : false
+        };
+        this.onFormClick = this.onFormClick.bind(this);  
+        this.formValid = this.formValid.bind(this);      
     }
 
     onFormClick(){   
         let formData = new FormData(this.formRef);
         formData.set('PasswordHash', sha256(formData.get('PasswordHash')));
+    
+        let user = {};
+
+        for (let key of formData) {
+            user[key[0]] = key[1];
+        }
+
+        let reqH = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(user)
+        };
+
+        fetch('RegisterUser', reqH)
+        .then(res => res.json())
+        .then(data => {
+            if(data){
+                data.type = UserStore.LOGIN_USER;
+                UserStore.userStore.dispatch(data);
+                sessionStorage.setItem('user', JSON.stringify(data));
+            }
+            else{
+                alert('User already exists.');
+            }
+            this.formRef.reset();
+            this.forceUpdate();
+        });
     }
 
     preventRefresh(e){
         e.preventDefault();
+    }
+
+    formValid(){
+        let formData = new FormData(this.formRef);
+        let retVal = true;
+        for (let key of formData) {
+            retVal &= key[1].length > 0;
+        }
+
+        if(retVal)
+            btnOpac = 1;
+        else 
+            btnOpac = 0.5;
+
+        this.setState({
+            formValid : retVal
+        });
     }
 
     render(){
@@ -27,6 +78,7 @@ export class Register extends React.Component{
             style={{
                 position:'fixed'
             }}
+            onChange={this.formValid}
         >
             <input
                 type="text"
@@ -54,6 +106,9 @@ export class Register extends React.Component{
                 type='submit'
                 onClick={this.onFormClick}
                 value='Register'
+                style={{
+                    opacity: btnOpac
+                }}
             />
         </form>
     }

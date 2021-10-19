@@ -14,7 +14,7 @@ export function UserReducer(
     state = initUser, action
 ) {
     if(action.type === LOGIN_USER){
-        return action.user;
+        return action;
     }
     else if(action.type === LOGOUT_USER){
         return initUser;

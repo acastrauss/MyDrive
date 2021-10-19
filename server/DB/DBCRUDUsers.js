@@ -8,11 +8,15 @@ exports.CreateUser = async function CreateUser(user){
     
     const client = new MongoClient(DBInfo.uri);
 
+    var retVal = null;
+
     try {
         await client.connect();
         
         let inserted = await client.db(UserDBName).collection(UserCollection)
         .insertOne(user);
+
+        retVal = inserted;
 
     } catch (error) {
         console.error(error);
@@ -20,6 +24,33 @@ exports.CreateUser = async function CreateUser(user){
     finally{
         client.close();
     }
+
+    return retVal;
+}
+
+exports.CheckUsername = async function CheckUsername(username) {
+    const client = new MongoClient(DBInfo.uri);
+    let retVal;
+
+    try {
+        await client.connect();
+        
+        let found = await client.db(UserDBName).collection(UserCollection)
+        .findOne({
+            Username: username
+        });
+
+        retVal = found;
+
+    } catch (error) {
+        console.error(error);
+        retVal = null;
+    }
+    finally{
+        client.close();
+    }
+
+    return retVal;
 }
 
 exports.CheckIfUserExists = async function Check(username, passwordHash){
@@ -42,6 +73,30 @@ exports.CheckIfUserExists = async function Check(username, passwordHash){
         retVal = null;
     }
     finally{
+        client.close();
+    }
+
+    return retVal;
+}
+
+exports.ReadById = async function ReadById(id) {
+    const client = new MongoClient(DBInfo.uri);
+    let retVal = null;
+
+    try {
+        await client.connect();
+        
+        let found = await client.db(UserDBName).collection(UserCollection)
+        .findOne({
+            _id: new ObjectId(id)
+        });
+
+        retVal = found;        
+    } 
+    catch (error) {
+        console.error(error);
+    }
+    finally {
         client.close();
     }
 
@@ -102,6 +157,5 @@ exports.DeleteUser = async function DeleteUser(id) {
         client.close();
     }
 
-    return retVal;    
-    
+    return retVal;       
 }

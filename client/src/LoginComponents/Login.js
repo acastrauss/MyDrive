@@ -14,6 +14,7 @@ export class Login extends React.Component{
         let formData = new FormData(this.formRef);
         formData.set('PasswordHash', sha256(formData.get('PasswordHash')));
         
+        
     }
 
     preventRefresh(e){
